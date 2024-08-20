@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #010535;
+        }
+
+
+        #head {
+            margin-bottom: 0px;
+            text-align: left;
+        }
+        #subhead {
+            margin-top: 5px;
+        }
+        .registration-form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin-bottom: 100px;
+        }
+
+        .registration-form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333333;
+        }
+
+        .registration-form h5 {
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #333333;
+        }
+
+        .registration-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555555;
+        }
+
+        .registration-form input,
+        .registration-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .registration-form textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .registration-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #010535;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .registration-form button:hover {
+            background-color: #0056b3;
+        }
+
+        #logo{
+            width: 300px;
+            height: auto;
+            margin-top: 100px;
+        }
+
+    </style>
+</head>
+<body>
+<!--  <img id="logo" src="../static/images/logo-color.png" alt="logo of Hoy">-->
+    <div class="registration-form">
+        <h2 id="head">Register Your Business</h2>
+        <h5 id="subhead">please provide all required details to register your business with us</h5>
+        <hr>
+        <form action="#" th:action="@{/registration}" th:object="${companyDto}" method="post">
+            <label for="business-name">Business Name</label>
+            <input th:field="*{companyName}" type="text" id="business-name" name="business-name" placeholder="Enter your business name" required>
+
+<!--            <label for="password">Password</label>-->
+<!--            <input th:field="*{companyPassword}" type="password" id="password" name="password" placeholder="Enter your password" required>-->
+
+
+            <label for="swift-code">Swift Code</label>
+            <input th:field="*{companySwiftCode}" type="text" id="swift-code" name="swift-code" placeholder="Enter your swift-code" required>
+
+            <label for="business-url">Business URL</label>
+            <input th:field="*{companyUrl}" type="text" id="business-url" name="business-url" placeholder="Enter your business URL" required>
+
+            <label for="address">Address</label>
+            <input th:field="*{companyAddress}" type="text" id="address" name="address" placeholder="Enter your address" required>
+
+            <label for="balance">Balance</label>
+            <input th:field="*{companyBalance}" type="number" id="balance" name="balance" placeholder="Enter your balance" required>
+
+            <label for="description">Description</label>
+            <textarea th:field="*{companyDescription}" id="description" name="description" placeholder="Enter a brief description of your business" required></textarea>
+            <hr><br>
+            <button type="submit" value="Submit" >Register</button>
+        </form>
+    </div>
+
+</body>
+</html>
