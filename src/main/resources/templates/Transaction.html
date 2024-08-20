@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Money Transfer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('images/xx.jpg'); /* Path to your background image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px; /* Adjust size as needed */
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background for readability */
+            max-width: 600px;
+            margin: 20px;
+            flex: 1;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            margin-right: 10px;
+        }
+        .send-button {
+            background-color: #28a745; /* Green color for send button */
+        }
+        .receive-button {
+            background-color: #007bff; /* Blue color for receive button */
+        }
+        .send-button:hover {
+            background-color: #218838; /* Darker green for hover effect */
+        }
+        .receive-button:hover {
+            background-color: #0056b3; /* Darker blue for hover effect */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Logo Image -->
+<img src="images/logo-color.png" alt="Logo" class="logo"> <!-- Path to your logo image -->
+
+<div class="container">
+    <h2>Transaction Form</h2>
+    <form action="#" th:action="@{/Transaction}" th:object="${company}" method="post">
+
+        <!-- Controller Ministry Box -->
+        <div class="form-group">
+            <label for="controller-ministry">Controller Ministry:</label>
+            <input type="text" id="controller-ministry" name="controllerMinistry" placeholder="Enter controller ministry code" th:field="*{companySwiftCode_first}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ministry">Select Ministry:</label>
+            <select id="ministry" name="ministry" onchange="populateSwiftCode()" required>
+                <option value="">Select Ministry</option>
+                <option value="PRIMARYCODE123">Primary Code</option>
+                <option value="NBEGEGCX001">Ministry of Communications</option>
+                <option value="NBEGEGCX198">Ministry of Electricity</option>
+                <option value="NBEGEGCX146">Ministry of Military Production</option>
+                <option value="NBEGEGCX124">Ministry of Petroleum and Mineral Resources</option>
+                <option value="CIBEGCAI001">Ministry of Foreign Affairs</option>
+                <option value="BOFEGCAI003">Ministry of Environment</option>
+                <option value="ADIBEGCXXX">Ministry of Health</option>
+                <option value="HSBCAMCA123">Ministry of Education</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="bank-code">Target Bank:</label>
+            <input type="text" id="bank-code" name="companySwiftCode" placeholder="Enter your bank code" th:field="*{companySwiftCode_second}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" placeholder="Enter amount to transfer or receive" th:field="*{amount}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" name="status" th:field="*{status}" required>
+                <option value="" disabled selected>Select transaction type</option>
+                <option value="T">Transfer</option>
+                <option value="R">Receive</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="send-button">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Populate SWIFT code based on selected ministry
+    function populateSwiftCode() {
+        const ministry = document.getElementById('ministry').value;
+        document.getElementById('bank-code').value = ministry;
+    }
+</script>
+</body>
+</html>

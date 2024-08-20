@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+        }
+        .content {
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Dashboard</a>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h4>Menu</h4>
+            <a href="#">Overview</a>
+            <a href="#">Reports</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 content">
+            <h2>Dashboard Overview</h2>
+
+            <!-- Cards -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5>Total Companies</h5>
+                            <p id="totalCompanies">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5>Total Balance</h5>
+                            <p id="totalBalance">$0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5>Total Transactions</h5>
+                            <p id="totalTransactions">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <h5>Total Transaction Amount</h5>
+                            <p id="totalTransactionAmount">$0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Transactions by Company</h5>
+                            <canvas id="transactionsByCompanyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Company Balances</h5>
+                            <canvas id="companyBalancesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Recent Transactions</h5>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Company</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody id="recentTransactionsTable">
+                                <!-- Dynamic rows will go here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Company Details</h5>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Balance</th>
+                                    <th>Swift Code</th>
+                                </tr>
+                                </thead>
+                                <tbody id="companyDetailsTable">
+                                <!-- Dynamic rows will go here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Custom JS -->
+<script>
+    // Data simulation (replace this with real data fetching from your backend)
+    const companies = [
+        { companySwiftCode: 'ABC123', companyName: 'Company A', companyBalance: 50000, companyDescription: 'Description A' },
+        { companySwiftCode: 'XYZ456', companyName: 'Company B', companyBalance: 75000, companyDescription: 'Description B' },
+        { companySwiftCode: 'LMN789', companyName: 'Company C', companyBalance: 20000, companyDescription: 'Description C' }
+    ];
+
+    const transactions = [
+        { amount: 1000, status: 'Completed', companySwiftCode_first: 'ABC123', companySwiftCode_second: 'XYZ456', date: '2024-08-20' },
+        { amount: 2000, status: 'Pending', companySwiftCode_first: 'XYZ456', companySwiftCode_second: 'LMN789', date: '2024-08-19' },
+        { amount: 3000, status: 'Failed', companySwiftCode_first: 'LMN789', companySwiftCode_second: 'ABC123', date: '2024-08-18' }
+    ];
+
+    // Calculate total metrics
+    const totalCompanies = companies.length;
+    const totalBalance = companies.reduce((sum, company) => sum + company.companyBalance, 0);
+    const totalTransactions = transactions.length;
+    const totalTransactionAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    // Update cards with calculated values
+    document.getElementById('totalCompanies').innerText = totalCompanies;
+    document.getElementById('totalBalance').innerText = `$${totalBalance}`;
+    document.getElementById('totalTransactions').innerText = totalTransactions;
+    document.getElementById('totalTransactionAmount').innerText = `$${totalTransactionAmount}`;
+
+    // Transactions by Company Chart
+    const transactionsByCompanyData = companies.map(company => {
+        const transactionCount = transactions.filter(transaction =>
+            transaction.companySwiftCode_first === company.companySwiftCode ||
+            transaction.companySwiftCode_second === company.companySwiftCode
+        ).length;
+        return { companyName: company.companyName, transactionCount: transactionCount };
+    });
+
+    const transactionsByCompanyChart = new Chart(document.getElementById('transactionsByCompanyChart'), {
+        type: 'bar',
+        data: {
+            labels: transactionsByCompanyData.map(data => data.companyName),
+            datasets: [{
+                label: 'Transactions',
+                data: transactionsByCompanyData.map(data => data.transactionCount),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Company Balances Chart
+    const companyBalancesChart = new Chart(document.getElementById('companyBalancesChart'), {
+        type: 'bar',
+        data: {
+            labels: companies.map(company => company.companyName),
+            datasets: [{
+                label: 'Balance',
+                data: companies.map(company => company.companyBalance),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Populate Recent Transactions Table
+    const recentTransactionsTable = document.getElementById('recentTransactionsTable');
+    transactions.forEach(transaction => {
+        const company = companies.find(c => c.companySwiftCode === transaction.companySwiftCode_first);
+
+        const row = `<tr>
+                            <td>${transaction.date}</td>
+                            <td>${company ? company.companyName : 'Unknown Company'}</td>
+                            <td>$${transaction.amount}</td>
+                            <td>${transaction.status}</td>
+                        </tr>`;
+        recentTransactionsTable.innerHTML += row;
+    });
+
+    // Populate Company Details Table
+    const companyDetailsTable = document.getElementById('companyDetailsTable');
+    companies.forEach(company => {
+        const row = `<tr>
+                            <td>${company.companyName}</td>
+                            <td>$${company.companyBalance}</td>
+                            <td>${company.companySwiftCode}</td>
+                        </tr>`;
+        companyDetailsTable.innerHTML += row;
+    });
+</script>
+
+</body>
+</html>
+
